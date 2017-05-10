@@ -11,12 +11,3 @@ pipeline:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
       - docker run deansohn/go-example-webserver /test.sh
-  push:
-    image: docker
-    environment:
-      - PASS=${HUB_PASS}
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    commands:
-      - docker login -u deansohn -p $PASS
-      - docker push deansohn/go-example-webserver
