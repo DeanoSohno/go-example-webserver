@@ -2,6 +2,6 @@ version: '3'
 
 services:
   server:
-    image: deansohn/example-webserver
+    image: deansohn/go-example-webserver
     ports: 
       - "5432:8080"
