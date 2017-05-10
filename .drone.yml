@@ -4,13 +4,17 @@ pipeline:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
-      - docker build -t deansohn/go-example-webserver .
+      - docker build -t deansohn/go-example-webserver:$DRONE_COMMIT_SHA .
+        --label org.label-schema.vcs-ref=$DRONE_COMMIT_SHA
+        --label build-number=$DRONE_BUILD_NUMBER
+        --label build-date="$(date)"
+        -t deansohn/go-example-webserver:$DRONE_COMMIT_SHA .
   test:
     image: docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
-      - docker run deansohn/go-example-webserver /test.sh
+      - docker run deansohn/go-example-webserver:$DRONE_COMMIT_SHA /test.sh
   push:
     image: docker
     environment:
@@ -19,11 +23,12 @@ pipeline:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
       - docker login -u deansohn -p $PASS
-      - docker push deansohn/go-example-webserver
+      - docker push deansohn/go-example-webserver:$DRONE_COMMIT_SHA
   deploy:
     image: docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
-      - docker pull deansohn/go-example-webserver
+      - docker pull deansohn/go-example-webserver:$DRONE_COMMIT_SHA
+      - docker tag deansohn/go-example-webserver:$DRONE_COMMIT_SHA deansohn/go-example-webserver:production
       - docker stack deploy -c ./docker-compose.yml go-example-webserver
