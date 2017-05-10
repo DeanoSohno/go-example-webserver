@@ -4,4 +4,4 @@ pipeline:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
-      - docker build -t DeanoSohno/go-example-webserver .
+      - docker build -t deansohn/go-example-webserver .
